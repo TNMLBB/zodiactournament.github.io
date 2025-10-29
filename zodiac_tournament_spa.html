@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Chosen Palette: Black, Gold (Amber), Silver (Gray) -->
+    <!-- Application Structure Plan: Se ha diseñado una SPA con navegación por pestañas (Inicio, Inscripción, Reglas de Partida, Conducta, Disputas). Esta arquitectura reemplaza la lista lineal de reglas por un sistema de "búsqueda de tareas", permitiendo a los jugadores (capitanes o miembros) acceder directamente a la información que necesitan en el momento. -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZODIAC TOURNAMENT (Temporada Escorpio)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark Gray / Black (gray-900) */
+            color: #f3f4f6; /* Light Text (gray-100) */
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn.active {
+            background-color: #f59e0b; /* Gold (amber-500) */
+            color: #111827; /* Dark Text (gray-900) */
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.5), 0 2px 4px -1px rgba(245, 158, 11, 0.2);
+        }
+        .nav-btn:not(.active) {
+            color: #d1d5db; /* Silver (gray-300) */
+            background-color: #1f2937; /* Darker Card BG (gray-800) */
+        }
+        .nav-btn:not(.active):hover {
+            background-color: #374151; /* Subtle Hover (gray-700) */
+            color: #f59e0b; /* Gold (amber-500) */
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .stat-card {
+            background-color: #1f2937; /* gray-800 */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-100 bg-gray-900">
+
+    <div class="container mx-auto max-w-5xl p-4 md:p-8">
+        
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-amber-400">ZODIAC TOURNAMENT</h1>
+            <p class="text-xl md:text-2xl text-gray-300 font-semibold">(Temporada Escorpio)</p>
+            <p class="text-lg text-gray-400 mt-2">Organizado por Torneos Nocturnos de Mobile Legends (TNML)</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 p-4 mb-6 bg-gray-800 rounded-lg shadow-xl">
+            <button data-target="inicio" class="nav-btn active text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">
+                Inicio
+            </button>
+            <button data-target="inscripcion" class="nav-btn text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">
+                Inscripción y Equipos
+            </button>
+            <button data-target="partida" class="nav-btn text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">
+                Reglas de Partida
+            </button>
+            <button data-target="conducta" class="nav-btn text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">
+                Código de Conducta
+            </button>
+            <button data-target="disputas" class="nav-btn text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">
+                Disputas y Sanciones
+            </button>
+        </nav>
+
+        <!-- Content Sections -->
+        <main>
+            <!-- ======================= -->
+            <!--      INICIO SECTION     -->
+            <!-- ======================= -->
+            <section id="inicio-section" class="content-section active">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-amber-500 mb-4">¡Bienvenidos al Torneo!</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Esta es la guía interactiva oficial del **ZODIAC TOURNAMENT (Temporada Escorpio)**. Hemos organizado todas las reglas para que puedas encontrar fácilmente lo que necesitas. Revisa los datos clave a continuación y navega por las pestañas para conocer todos los detalles.
+                    </p>
+
+                    <!-- Key Stats (Gold/Silver emphasis) -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="stat-card border-l-4 border-amber-400">
+                            <span class="text-sm font-semibold text-gray-400 mb-1">PREMIO</span>
+                            <span class="text-xl md:text-2xl font-bold text-amber-400 text-center">5 Pases Semanales</span>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400">
+                            <span class="text-sm font-semibold text-gray-400 mb-1">FECHA</span>
+                            <span class="text-xl md:text-2xl font-bold text-gray-300 text-center">8 Nov, 2025</span>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400">
+                            <span class="text-sm font-semibold text-gray-400 mb-1">HORA</span>
+                            <span class="text-xl md:text-2xl font-bold text-gray-300 text-center">7:00 PM (Vzla)</span>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400">
+                            <span class="text-sm font-semibold text-gray-400 mb-1">FORMATO</span>
+                            <span class="text-xl md:text-2xl font-bold text-gray-300 text-center">Bo1 - Eliminación Simple</span>
+                        </div>
+                    </div>
+
+                    <!-- Bracket Progression Chart -->
+                    <h3 class="text-2xl font-bold text-amber-500 mb-4">Progresión del Torneo</h3>
+                    <p class="text-gray-300 mb-4">
+                        El torneo es de eliminación simple. Cada partida es a "Mejor de 1" (Bo1): si pierdes, quedas eliminado. La gráfica a continuación muestra cómo avanzarán los equipos desde 16 hasta encontrar al campeón.
+                    </p>
+                    <div class="chart-container w-full max-w-2xl mx-auto h-80 md:h-96 relative">
+                        <canvas id="bracketChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========================== -->
+            <!--      INSCRIPCION SECTION    -->
+            <!-- =========================== -->
+            <section id="inscripcion-section" class="content-section">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-amber-500 mb-4">Inscripción y Equipos</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Aquí encontrarás todo lo necesario para registrar a tu equipo y asegurar que cumple con las normativas del torneo.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Roster Rules -->
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3">Composición del Equipo (Roster)</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-300">
+                                <li>**Costo:** La inscripción es 100% gratuita.</li>
+                                <li>**Titulares:** 5 jugadores obligatorios.</li>
+                                <li>**Suplentes:** 2 jugadores suplentes permitidos (máximo).</li>
+                                <li>**Restricciones:** No hay límites de edad o ubicación.</li>
+                                <li>**Exclusividad:** Un jugador no puede estar inscrito en más de un equipo.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Registration Data -->
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3">Datos de Registro</h3>
+                            <p class="text-gray-300 mb-3">El capitán debe entregar la siguiente información por CADA jugador (titular y suplente):</p>
+                            <ol class="list-decimal list-inside space-y-2 font-medium text-gray-300">
+                                <li>Nickname (Nombre en el juego)</li>
+                                <li>Game ID (ID de jugador)</li>
+                                <li>Línea principal (EXP, Jungla, Mid, Oro, Roam)</li>
+                            </ol>
+                            <div class="mt-4 p-3 bg-red-900 border border-red-700 text-red-300 rounded-lg">
+                                <p class="font-bold">¡Importante!</p>
+                                <p>El **Nickname** registrado no podrá ser modificado durante el torneo. Jugar con un nick diferente se considera suplantación.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================== -->
+            <!--      PARTIDA SECTION     -->
+            <!-- ======================== -->
+            <section id="partida-section" class="content-section">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-amber-500 mb-4">Reglas de Partida</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Estas son las reglas que se aplican antes, durante y después de cada enfrentamiento. Es responsabilidad de los capitanes conocerlas.
+                    </p>
+
+                    <div class="space-y-6">
+                        <!-- Antes de la Partida -->
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3 border-b-2 border-gray-700 pb-2">Antes de la Partida</h3>
+                            <ul class="list-none space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Creación de Sala</h4>
+                                        <p class="text-gray-400">El modo de juego es **Draft Pick**. Los capitanes deben acordar quién crea la sala. (Recomendado: El equipo de arriba en el *bracket*). Servidor: Venezuela.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-gray-300 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Puntualidad y W.O. (Walk Over)</h4>
+                                        <p class="text-gray-400">Hay **10 minutos de tolerancia** desde la hora oficial. Si un equipo no está completo (5 jugadores) tras 10 minutos, el rival puede pedir W.O.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-gray-300 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Prueba de W.O.</h4>
+                                        <p class="text-gray-400">El capitán presente debe enviar un **capture de pantalla** a la organización mostrando la sala (con el rival incompleto) y la **hora actual** legible.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Durante la Partida -->
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3 border-b-2 border-gray-700 pb-2">Durante la Partida</h3>
+                             <ul class="list-none space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-gray-300 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">PROHIBIDO PAUSAR</h4>
+                                        <p class="text-gray-400">Bajo ninguna circunstancia se permite el uso de la función de pausa, ni por lag, llamadas o problemas técnicos.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-gray-300 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">PROHIBIDO ESPECTADORES</h4>
+                                        <p class="text-gray-400">Solo los 10 jugadores pueden estar en la sala. (Excepción: La final podrá ser transmitida por staff de TNML).</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Desconexiones</h4>
+                                        <p class="text-gray-400">Si un jugador se desconecta, la partida continúa 4v5. El jugador puede reconectar. No se reiniciará la partida por problemas de conexión.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Después de la Partida -->
+                        <div>
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3 border-b-2 border-gray-700 pb-2">Después de la Partida</h3>
+                             <ul class="list-none space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400 font-bold text-xl">►</span>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Reporte de Resultado</h4>
+                                        <p class="text-gray-400">El capitán del equipo **ganador** debe tomar un **capture de pantalla** del resultado final y enviarlo a la organización para avanzar en el *bracket*.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================= -->
+            <!--      CONDUCTA SECTION     -->
+            <!-- ========================= -->
+            <section id="conducta-section" class="content-section">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-amber-500 mb-4">Código de Conducta</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        El juego limpio y el respeto son la base de TNML. Incurrir en las siguientes faltas resultará en sanciones severas.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="stat-card border-l-4 border-gray-400 items-start p-4">
+                            <h3 class="text-xl font-bold text-gray-300 mb-2">🚫 PROHIBIDO</h3>
+                            <p class="text-gray-400">**Suplantación de Identidad:** Jugar en la cuenta de otro jugador o con un Nickname no registrado.</p>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400 items-start p-4">
+                            <h3 class="text-xl font-bold text-gray-300 mb-2">🚫 PROHIBIDO</h3>
+                            <p class="text-gray-400">**Programas Externos:** Uso de *hacks*, *scripts*, *map hacks* o cualquier software de trampa.</p>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400 items-start p-4">
+                            <h3 class="text-xl font-bold text-gray-300 mb-2">🚫 PROHIBIDO</h3>
+                            <p class="text-gray-400">**Aprovechamiento de Bugs:** Usar intencionalmente *bugs* o *exploits* del juego para ganar.</p>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400 items-start p-4">
+                            <h3 class="text-xl font-bold text-gray-300 mb-2">🚫 PROHIBIDO</h3>
+                            <p class="text-gray-400">**Comportamiento Tóxico:** Faltas de respeto, lenguaje vulgar, acoso o amenazas (dentro o fuera del juego).</p>
+                        </div>
+                        <div class="stat-card border-l-4 border-gray-400 items-start p-4">
+                            <h3 class="text-xl font-bold text-gray-300 mb-2">🚫 PROHIBIDO</h3>
+                            <p class="text-gray-400">**Provocación en Juego:** Burlas, *spam* de *emotes* y *backeos* con la intención de provocar al rival.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================= -->
+            <!--      DISPUTAS SECTION     -->
+            <!-- ========================= -->
+            <section id="disputas-section" class="content-section">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-amber-500 mb-4">Disputas y Sanciones</h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Si un equipo rival rompe las reglas, aquí te explicamos cómo proceder y cuáles son las consecuencias.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Proceso de Denuncia -->
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3">¿Cómo Denunciar una Falta?</h3>
+                            <p class="text-gray-300 mb-4">Dado que las partidas no son supervisadas (excepto la final), las denuncias deben ser presentadas por los capitanes.</p>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>**Capitán:** Solo el capitán puede presentar una denuncia formal a la organización.</li>
+                                <li>**PRUEBAS:** La denuncia debe incluir **pruebas irrefutables** (captures de pantalla del chat, videos, etc.) que muestren la falta, quién la cometió y la hora.</li>
+                                <li class="font-semibold text-amber-400">Sin pruebas claras, la denuncia será desestimada.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Sanciones -->
+                        <div class="bg-gray-900 p-6 rounded-lg border border-gray-700">
+                            <h3 class="text-2xl font-semibold text-amber-500 mb-3">Sanciones por Faltas Graves</h3>
+                            <p class="text-gray-300 mb-3">Cualquier equipo que cometa las faltas graves (trampas, suplantación, hacks) recibirá:</p>
+                            <ul class="list-disc list-inside space-y-2 text-red-500 font-bold">
+                                <li>Descalificación Inmediata del torneo.</li>
+                                <li>Baneo Permanente de la organización TNML (equipo e integrantes).</li>
+                            </ul>
+                            <div class="mt-4 p-3 bg-gray-700 border border-gray-600 text-gray-200 rounded-lg">
+                                <p class="font-bold">Autoridad Final</p>
+                                <p>La organización TNML tiene la decisión final e inapelable sobre todas las disputas, basándose en las pruebas presentadas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Navigation Logic ---
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+
+                    // Update buttons
+                    navButtons.forEach(btn => {
+                        if (btn.getAttribute('data-target') === targetId) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+
+                    // Update content
+                    contentSections.forEach(section => {
+                        if (section.id === `${targetId}-section`) {
+                            section.classList.add('active');
+                        } else {
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // --- Chart.js Logic ---
+            const ctx = document.getElementById('bracketChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Primera Ronda', 'Cuartos de Final', 'Semifinal', 'Gran Final', 'Campeón'],
+                        datasets: [{
+                            label: 'Equipos Restantes',
+                            data: [16, 8, 4, 2, 1],
+                            backgroundColor: [
+                                'rgba(156, 163, 175, 0.6)',  // Silver (gray-400)
+                                'rgba(107, 114, 128, 0.6)',   // Darker Silver (gray-500)
+                                'rgba(75, 85, 99, 0.6)',   // Even Darker Silver (gray-600)
+                                'rgba(251, 191, 36, 0.6)',  // Gold (amber-400)
+                                'rgba(217, 119, 6, 0.6)'    // Dark Gold (amber-600)
+                            ],
+                            borderColor: [
+                                'rgba(156, 163, 175, 1)',
+                                'rgba(107, 114, 128, 1)',
+                                'rgba(75, 85, 99, 1)',
+                                'rgba(251, 191, 36, 1)',
+                                'rgba(217, 119, 6, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 2,
+                                    color: '#d1d5db' // Silver ticks
+                                },
+                                grid: {
+                                    color: 'rgba(55, 65, 81, 0.5)' // Dark grid
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Número de Equipos',
+                                    color: '#f59e0b' // Gold title
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#d1d5db' // Silver ticks
+                                },
+                                grid: {
+                                    color: 'rgba(55, 65, 81, 0.5)' // Dark grid
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Rondas del Torneo',
+                                    color: '#f59e0b' // Gold title
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + ' equipos';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
