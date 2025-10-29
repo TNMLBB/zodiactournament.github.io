@@ -1,0 +1,1 @@
+Sólo lean el reglamento
